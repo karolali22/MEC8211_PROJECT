@@ -1,2 +1,2 @@
-# MEC8211_PROJECT-
+# MEC8211_PROJECT
 Group project
