@@ -107,7 +107,7 @@ def thomas(a, b, c, d):
 
 # Simulation ------------------------------------------------------------------
 
-# Initialize u_n with initial conditions
+# Initialize C_n with initial conditions
 C_n = np.zeros(I)  # C at time t=0
 C_n[-1] = Ce  # Apply Dirichlet BC at r = R
 

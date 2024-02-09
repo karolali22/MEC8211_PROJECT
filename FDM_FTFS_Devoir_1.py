@@ -27,7 +27,7 @@ d_t = 0.5  # Time step in s
 
 R = 0.5  # Polar domain size in m
 I = int(R / d_r) + 1 # Number of spatial steps
-T = 1000 # Simulation time in s
+T = 1000000 # Simulation time in s
 N = int(T / d_t) + 1 # Number of time iterations
 
 # Matrix Elements -------------------------------------------------------------
@@ -107,7 +107,7 @@ def thomas(a, b, c, d):
 
 # Simulation ------------------------------------------------------------------
 
-# Initialize u_n with initial conditions
+# Initialize C_n with initial conditions
 C_n = np.zeros(I)  # C at time t=0
 C_n[-1] = Ce  # Apply Dirichlet BC at r = R
 
