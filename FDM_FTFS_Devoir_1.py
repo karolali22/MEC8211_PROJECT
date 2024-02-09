@@ -15,19 +15,19 @@ import sys
 # Physical Parameters ---------------------------------------------------------
 
 D = 10**(-10)  # Diffusion coefficient in m^2.s^-1
-k = 4**(-9)  # Reaction constant in s^-1
+k = 4*10**(-9)  # Reaction constant in s^-1
 Ce = 12 # Dirichlet boundary constant concentration in mol.m^-3
 
 # Discretization Parameters ---------------------------------------------------
 
-d_r = 0.1  # Polar spatial step in m
-d_t = 0.5  # Time step in s
+d_r = 0.0125  # Polar spatial step in m
+d_t = 200  # Time step in s
 
 # Simulation Parameters -------------------------------------------------------
 
 R = 0.5  # Polar domain size in m
 I = int(R / d_r) + 1 # Number of spatial steps
-T = 1000000 # Simulation time in s
+T = 10000  # Simulation time in s
 N = int(T / d_t) + 1 # Number of time iterations
 
 # Matrix Elements -------------------------------------------------------------
@@ -36,7 +36,7 @@ N = int(T / d_t) + 1 # Number of time iterations
 First row: [B1 C1 0 0 ... 0 0]
 
 B_1 = 1 + (D*(-2/(d_r**2))-k)*d_t
-C_1 = D*(1/(d_r**2))*d_t
+C_1 = D*(2/(d_r**2))*d_t
 """
 
 """
@@ -64,7 +64,7 @@ C = np.zeros(I)
 
 # First row, accounting for Neumann BC at r = 0
 B[0] = 1 + (D*(-2/(d_r**2))-k)*d_t
-C[0] = D*(1/(d_r**2))*d_t
+C[0] = D*(2/(d_r**2))*d_t
 
 # Intermediate rows
 for i in range(1, I-1):
@@ -80,7 +80,7 @@ B[-1] = 1
 
 def thomas(a, b, c, d):
     I = len(d)  # Number of equations
-    # Copy the vectors to avoid modifying the original arrays
+
     c_prime = np.zeros(I-1)
     d_prime = np.zeros(I)
     
@@ -130,15 +130,25 @@ print()
 
 # Plotting --------------------------------------------------------------------
 
-def plot(C, d_r, title):
+def plot(C, d_r, R, k, D, Ce, title):
     r_positions = np.arange(0, R + d_r, d_r)[:len(C)]
+    r_positions_a = np.linspace(0, R, 1000)
+    C_a = np.zeros_like(r_positions_a)
+    
+    for i, r in enumerate(r_positions_a):
+        a = 1 - 1/4 * k/D * R**2 * (r**2/R**2 - 1)
+        C_a[i] = Ce / a
+    
     plt.rcParams['font.family'] = 'Arial'
-    plt.figure(dpi=600,figsize=(6, 3))
-    plt.plot(r_positions, C, '-o', color='black')
+    plt.figure(dpi=600, figsize=(6, 3))
+    plt.plot(r_positions, C, '-o', label='Numerical', color='black')
+    plt.plot(r_positions_a, C_a, label='Analytical', color='red',linewidth=2.5)
     plt.title(title)
     plt.xlabel('r (m)')
     plt.ylabel(r'C (mol/m$^3$)')
+    plt.legend()
     plt.grid(True)
     plt.show()
+
     
-plot(C_n, d_r, 'Steady-State Concentration vs Polar Position')
+plot(C_n, d_r, R, k, D, Ce, 'Steady-State Concentration vs Polar Position')
