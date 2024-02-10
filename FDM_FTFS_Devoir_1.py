@@ -14,20 +14,20 @@ import sys
 
 # Physical Parameters ---------------------------------------------------------
 
-D = 10**(-10)  # Diffusion coefficient in m^2.s^-1
-k = 4*10**(-9)  # Reaction constant in s^-1
+D = 10**(-2)  # Diffusion coefficient in m^2.s^-1
+k = 4*10**(-2)  # Reaction constant in s^-1
 Ce = 12 # Dirichlet boundary constant concentration in mol.m^-3
 
 # Discretization Parameters ---------------------------------------------------
 
 d_r = 0.0125  # Polar spatial step in m
-d_t = 200  # Time step in s
+d_t = 10000  # Time step in s
 
 # Simulation Parameters -------------------------------------------------------
 
 R = 0.5  # Polar domain size in m
 I = int(R / d_r) + 1 # Number of spatial steps
-T = 10000  # Simulation time in s
+T = 10000000  # Simulation time in s
 N = int(T / d_t) + 1 # Number of time iterations
 
 # Matrix Elements -------------------------------------------------------------

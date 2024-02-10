@@ -3,7 +3,7 @@
 Simon
 MEC8211 - Homework 1
 1-D Polar Diffusion PDE with Constant Diffusion Coefficient
-1st-Order Forward Time - 1st-Order Center Space
+1st-Order Forward Time - 2nd-Order Center Space
 Neumann BC at r=0 and Dirichlet BC at r=R
 
 """
@@ -21,13 +21,13 @@ Ce = 12 # Dirichlet boundary constant concentration in mol.m^-3
 # Discretization Parameters ---------------------------------------------------
 
 d_r = 0.0125  # Polar spatial step in m
-d_t = 1000  # Time step in s
+d_t = 200  # Time step in s
 
 # Simulation Parameters -------------------------------------------------------
 
 R = 0.5  # Polar domain size in m
 I = int(R / d_r) + 1 # Number of spatial steps
-T = 1000000  # Simulation time in s
+T = 1000  # Simulation time in s
 N = int(T / d_t) + 1 # Number of time iterations
 
 # Matrix Elements -------------------------------------------------------------
