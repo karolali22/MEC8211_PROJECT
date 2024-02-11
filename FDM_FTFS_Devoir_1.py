@@ -16,12 +16,12 @@ from scipy.linalg import lu_factor, lu_solve
 # Physical Parameters ---------------------------------------------------------
 
 D = 10**(-2) # Diffusion coefficient in m^2.s^-1
-k = 4*10**(-5) # Reaction constant in s^-1
+k = 4*10**(-3) # Reaction constant in s^-1
 Ce = 12 # Dirichlet boundary constant concentration in mol.m^-3
 
 # Discretization Parameters ---------------------------------------------------
 
-d_r = 0.0125 # Polar spatial step in m
+d_r = 0.00125 # Polar spatial step in m
 d_t = 200 # Time step in s
 
 # Simulation Parameters -------------------------------------------------------
