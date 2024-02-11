@@ -16,20 +16,20 @@ from scipy.linalg import lu_factor, lu_solve
 # Physical Parameters ---------------------------------------------------------
 
 D = 10**(-2) # Diffusion coefficient in m^2.s^-1
-k = 4*10**(-2) # Reaction constant in s^-1
+k = 4*10**(-5) # Reaction constant in s^-1
 Ce = 12 # Dirichlet boundary constant concentration in mol.m^-3
 
 # Discretization Parameters ---------------------------------------------------
 
 d_r = 0.0125 # Polar spatial step in m
-d_t = 2000 # Time step in s
+d_t = 200 # Time step in s
 
 # Simulation Parameters -------------------------------------------------------
 
 R = 0.5 # Polar domain size in m
 I = int(R / d_r) + 1 # Number of spatial steps
-T = 10000 # Simulation time in s
-N = int(T / d_t) + 1 # Number of time iterations
+tolerance = 1e-16  # Define convergence tolerance
+max_iterations = 100000  # Safety parameter to prevent infinite loop
 
 # Matrix Elements -------------------------------------------------------------
 
@@ -83,27 +83,43 @@ lu, piv = lu_factor(matrix)
 C_n = np.zeros(I)  # C at time t=0
 C_n[0] = 0 # Apply Neumann BC at r = 0
 C_n[-1] = Ce  # Apply Dirichlet BC at r = R
+iteration = 0  # Keep track of the number of iterations
+converged = False  # Flag to check convergence
 
 # Function for displaying progress
-def progress_bar(iteration, total, bar_length=50):
-    percent = "{0:.2f}".format(100 * (iteration / float(total)))
-    filled_length = int(bar_length * iteration // total)
-    bar = '#' * filled_length + '.' * (bar_length - filled_length)
-    sys.stdout.write(f'\rProgress: [{bar}] {percent}%')
+def convergence_progress(current_diff, tolerance, iteration):
+    percent = 100 * (1 - current_diff / tolerance)
+    percent = min(max(percent, 0), 100)
+    bar_length = 25
+    filled_length = int(bar_length * percent // 100)
+    bar = '#' * filled_length + '-' * (bar_length - filled_length)
+    sys.stdout.write(f'\rIteration {iteration}: Convergence [{bar}] {percent:.2f}% (Diff: {current_diff:.2e}, Tolerance: {tolerance:.2e})')
     sys.stdout.flush()
 
-# Time-stepping loop
-for n in range(N):
+while not converged and iteration < max_iterations:
     rhs = C_n.copy()
     rhs[0] = 0  # Apply Neumann BC at r = 0
     rhs[-1] = Ce  # Apply Dirichlet BC at r = R
-    
+
     # Solve M * C_{n+1} = C_{n} using LU decomposition
     C_n_plus_1 = lu_solve((lu, piv), rhs)
-    C_n = C_n_plus_1.copy()
-    progress_bar(n + 1, N)
+
+    # Check convergence
+    diff = np.max(np.abs(C_n_plus_1 - C_n))
+    if diff < tolerance:
+        converged = True
+    else:
+        C_n = C_n_plus_1.copy()
+
+    iteration += 1
+    convergence_progress(diff, tolerance, iteration)
 
 print()
+
+if converged:
+    print(f"\nConverged after {iteration} iterations.")
+else:
+    print(f"\nStopped after reaching the maximum number of iterations: {max_iterations}.")
 
 # Plotting --------------------------------------------------------------------
 
