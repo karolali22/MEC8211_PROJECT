@@ -21,13 +21,13 @@ Ce = 12 # Dirichlet boundary constant concentration in mol.m^-3
 
 # Discretization Parameters ---------------------------------------------------
 
-d_r = 0.00125 # Polar spatial step in m
+d_r = 0.125 # Polar spatial step in m
 d_t = 200 # Time step in s
+R = 0.5 # Polar domain size in m
+I = int(R / d_r) + 1 # Number of spatial steps
 
 # Simulation Parameters -------------------------------------------------------
 
-R = 0.5 # Polar domain size in m
-I = int(R / d_r) + 1 # Number of spatial steps
 tolerance = 1e-16  # Define convergence tolerance
 max_iterations = 100000  # Safety parameter to prevent infinite loop
 
@@ -134,8 +134,8 @@ def plot(C, d_r, R, k, D, Ce, title):
     
     plt.rcParams['font.family'] = 'Arial'
     plt.figure(dpi=600, figsize=(6, 3))
-    plt.plot(r_positions, C, '-o', label='Numerical', color='black')
-    plt.plot(r_positions_a, C_a, label='Analytical', color='red',linewidth=2.5)
+    plt.plot(r_positions_a, C_a, label='Analytical', color='red')
+    plt.plot(r_positions, C, '-o', label='Numerical', color='black', markersize=4)
     plt.title(title)
     plt.xlabel('r (m)')
     plt.ylabel(r'C (mol/m$^3$)')
@@ -145,3 +145,23 @@ def plot(C, d_r, R, k, D, Ce, title):
 
     
 plot(C_n, d_r, R, k, D, Ce, 'FTFS: Steady-State Concentration vs Polar Position')
+
+# Error -----------------------------------------------------------------------
+
+C_a_numerical_grid = np.zeros_like(C_n)
+for i, r in enumerate(np.arange(0, R + d_r, d_r)[:len(C_n)]):
+    a = 1 - 1/4 * k/D * R**2 * (r**2/R**2 - 1)
+    C_a_numerical_grid[i] = Ce / a
+
+# Calculate errors
+errors = C_a_numerical_grid - C_n
+
+# Compute L1, L2, and Linf errors
+L1_error = np.mean(np.abs(errors))
+L2_error = np.sqrt(np.mean(np.square(errors)))
+Linf_error = np.max(np.abs(errors))
+
+print(f"Mesh Size dr: {d_r}")
+print(f"L1 Error: {L1_error}")
+print(f"L2 Error: {L2_error}")
+print(f"Linf Error: {Linf_error}")
