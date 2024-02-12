@@ -1,6 +1,6 @@
 """
 
-Simon
+Group Project 
 MEC8211 - Homework 1
 1-D Polar Diffusion PDE with Constant Diffusion Coefficient
 1st-Order Forward Time - 1st-Order Forward Space
