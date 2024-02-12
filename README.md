@@ -1,3 +1,3 @@
-# MEC8211_PROJECT
-Group project - Devoir 1. 
-Assignment description is found on Moodle.
+# MEC8211_PROJECT 
+Group project. 
+Assignment description is posted on Moodle for this spesific course. 
