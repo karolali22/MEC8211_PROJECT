@@ -1,6 +1,6 @@
 """
 
-MEC8211 - Homework 1
+MEC8211 - Homework 2
 1-D Polar Diffusion PDE with Constant Diffusion Coefficient
 1st-Order Forward Time - 1st-Order Forward Space
 Neumann BC at r=0 and Dirichlet BC at r=R
