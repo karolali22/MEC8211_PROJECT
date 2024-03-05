@@ -1,0 +1,35 @@
+# Time steps (dt) for each simulation
+h_values_real = np.array([
+    2,
+    1,
+    0.5,
+    0.25,
+    0.125
+])
+
+# L1 error values for each provided time step
+l1_error_values_real = np.array([
+    1.9086232167087782,  # L1 error for dt = 2
+    0.9413594641884944,  # L1 error for dt = 1
+    0.46462661362087565,  # L1 error for dt = 0.5
+    0.2296521126876986,  # L1 error for dt = 0.25
+    0.11354155332869399  # L1 error for dt = 0.125
+])
+
+# L2 error values for each provided time step
+l2_error_values_real = np.array([
+    3.0101061514000937,  # L2 error for dt = 2
+    1.744479383273134,  # L2 error for dt = 1
+    1.0016740200864511,  # L2 error for dt = 0.5
+    0.5706723911123559,  # L2 error for dt = 0.25
+    0.32216096272513967  # L2 error for dt = 0.125
+])
+
+# Linf error values for each provided time step
+linf_error_values_real = np.array([
+    13.225282199569694,  # Linf error for dt = 2
+    12.620021957627344,  # Linf error for dt = 1
+    11.81935018782531,  # Linf error for dt = 0.5
+    11.168641119770497,  # Linf error for dt = 0.25
+    10.387958549264399  # Linf error for dt = 0.125
+])
