@@ -1,7 +1,7 @@
 """
 
 Group Project
-MEC8211 - Homework 2
+MEC8211 - Homework 1
 1-D Polar Diffusion PDE with Constant Diffusion Coefficient
 1st-Order Forward Time - 2nd-Order Center Space
 Neumann BC at r=0 and Dirichlet BC at r=R
@@ -9,6 +9,7 @@ Neumann BC at r=0 and Dirichlet BC at r=R
 """
 
 import numpy as np
+import matplotlib.pyplot as plt
 import sys
 from scipy.linalg import lu_factor, lu_solve
 
@@ -20,19 +21,15 @@ Ce = 12 # Dirichlet boundary constant concentration in mol.m^-3
 
 # Discretization Parameters ---------------------------------------------------
 
-d_r = 0.125/32 # Polar spatial step in m
-d_t = 1/2 # Time step in s
+d_r = 0.125 # Polar spatial step in m
+d_t = 100 # Time step in s
 R = 0.5 # Polar domain size in m
 I = int(round((R + d_r)/d_r, 1)) # Number of spatial steps
-T = 1000 # Total time in s
-max_iterations = int(round((T)/d_t, 1))
-
-print(f"Total Iterations: {max_iterations}")
-print()
 
 # Simulation Parameters -------------------------------------------------------
 
 tolerance = 1e-16  # Define convergence tolerance
+max_iterations = 10000000  # Safety parameter to prevent infinite loop
 
 # Matrix Elements -------------------------------------------------------------
 
@@ -98,10 +95,6 @@ iteration = 0  # Keep track of the number of iterations
 converged = False  # Flag to check convergence
 current_time = 0  # Initialize current time
 
-# To store C_n at each time step
-C_n_storage = []
-time_steps = []
-
 # Function for displaying progress
 def convergence_progress(current_diff, tolerance, iteration):
     percent = 100 * (1 - current_diff / tolerance)
@@ -119,7 +112,7 @@ while not converged and iteration < max_iterations:
     for i in range(1, I-1):
         r_i = i * d_r
         rhs[i] += source_term(r_i, current_time, D, k, lam, A) * d_t
-        
+
     rhs[0] = 0  # Apply Neumann BC at r = 0
     rhs[-1] = Ce  # Apply Dirichlet BC at r = R
 
@@ -133,11 +126,8 @@ while not converged and iteration < max_iterations:
     else:
         C_n = C_n_plus_1.copy()
 
-    # Save a copy of C_n and the current time for each iteration
-    C_n_storage.append(C_n.copy())
-    time_steps.append(current_time)
-
     current_time += d_t
+
     iteration += 1
     convergence_progress(diff, tolerance, iteration)
 
@@ -148,55 +138,48 @@ if converged:
 else:
     print(f"\nStopped after reaching the maximum number of iterations: {max_iterations}.")
 
-print()
+# Plotting --------------------------------------------------------------------
 
-C_n_storage_array = np.array(C_n_storage)
+def plot(C, d_r, R, k, D, Ce, A, title):
+    r_positions = np.arange(0, R + d_r, d_r)[:len(C)]
+    r_positions_a = np.linspace(0, R, 1000)
+    C_a = np.zeros_like(r_positions_a)
+    
+    for i, r in enumerate(r_positions_a):
+        B = Ce*(k*(R**2)/4 - D) + A*(R**3)*(D - k*(R**2)/25)
+        C_a[i] = (1/(D - k*(r**2)/4))*(A*(r**3)*(D - k*(r**2)/25) - B)
+    
+    plt.rcParams['font.family'] = 'Arial'
+    plt.figure(dpi=600, figsize=(6, 3))
+    plt.plot(r_positions_a, C_a, label='Analytical', color='red')
+    plt.plot(r_positions, C, '-o', label='Numerical', color='black', markersize=4)
+    plt.title(title)
+    plt.xlabel('r (m)')
+    plt.ylabel(r'C (mol/m$^3$)')
+    plt.legend()
+    plt.grid(True)
+    plt.show()
+
+plot(C_n, d_r, R, k, D, Ce, A,'FTCS: Steady-State Concentration vs Polar Position')
 
 # Error -----------------------------------------------------------------------
 
 C_a_numerical_grid = np.zeros_like(C_n)
-C_pred = []
+for i, r in enumerate(np.arange(0, R + d_r, d_r)[:len(C_n)]):
+    B = Ce*(k*(R**2)/4 - D) + A*(R**3)*(D - k*(R**2)/25)
+    C_a_numerical_grid[i] = (1/(D - k*(r**2)/4))*(A*(r**3)*(D-k*(r**2)/25) - B)
 
-epsilon = 1e-10  # Small positive number to prevent division by zero
+# Calculate errors
+errors = C_a_numerical_grid - C_n
 
-for t_idx, t in enumerate(time_steps):
-    for i, r in enumerate(np.arange(0, R + d_r, d_r)[:len(C_n)]):
-        B = Ce*(k*(R**2)/4 - D) + A*(R**3)*(D - k*(R**2)/25)
-        
-        if abs(t) < epsilon:
-            t_modified = epsilon
-        else:
-            t_modified = t
+# Compute L1, L2, and Linf errors
+L1_error = np.mean(np.abs(errors))
+L2_error = np.sqrt(np.mean(np.square(errors)))
+Linf_error = np.max(np.abs(errors))
 
-        # Use t_modified in your equation to ensure it's never too small
-        C_a_numerical_grid[i] = (1/(r**2/(4*t_modified)*(1/t_modified + k) - D)) * \
-                                (-A*(r**3)*(D - k*(r**2)/25) + B + (r**2/(4*t_modified*lam))*(k - lam)*np.exp(-lam*t_modified))
-        
-    C_pred.append(C_a_numerical_grid)
-
-L1_errors = []
-L2_errors = []
-Linf_errors = []
-
-r_values = np.arange(0, R+d_r, d_r)
-
-for t_idx, t in enumerate(time_steps):
-    for r_idx, r in enumerate(r_values):
-        C_actual = C_n_storage_array[t_idx, r_idx]
-        error = abs(C_pred - C_actual)
-        L1_errors.append(error)
-        L2_errors.append(error**2)
-        Linf_errors.append(error)
-
-mean_L1_error = np.mean(L1_errors)
-mean_L2_error = np.sqrt(np.mean(L2_errors))
-mean_Linf_error = np.max(Linf_errors)
-
-print(f"Mesh Nodes I: {I}")
+print(f"Mesh nodes I: {I}")
 print(f"Mesh Size dr: {d_r}")
-print(f"Total Iterations: {max_iterations}")
-print(f"Time Step dt: {d_t}")
-print(f"Mean L1 Error: {mean_L1_error}")
-print(f"Mean L2 Error: {mean_L2_error}")
-print(f"Mean Linf Error: {mean_Linf_error}")
+print(f"L1 Error: {L1_error}")
+print(f"L2 Error: {L2_error}")
+print(f"Linf Error: {Linf_error}")
 
