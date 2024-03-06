@@ -15,7 +15,7 @@ from scipy.linalg import lu_factor, lu_solve
 
 # Spline ----------------------------------------------------------------------
 
-with open('spline.pkl', 'rb') as file:
+with open('../data/spline_MNP.pkl', 'rb') as file:
     spline = pickle.load(file)
 
 print()
@@ -29,8 +29,8 @@ Ce = 12 # Dirichlet boundary constant concentration in mol.m^-3
 
 # Discretization Parameters ---------------------------------------------------
 
-d_r = 0.125/8 # Polar spatial step in m
-d_t = 1/8 # Time step in s
+d_r = 0.125/2 # Polar spatial step in m
+d_t = 1/2 # Time step in s
 R = 0.5 # Polar domain size in m
 I = int(round((R + d_r)/d_r, 1)) # Number of spatial steps
 

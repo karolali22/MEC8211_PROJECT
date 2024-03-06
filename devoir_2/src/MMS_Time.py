@@ -15,7 +15,7 @@ from scipy.linalg import lu_factor, lu_solve
 
 # Spline ----------------------------------------------------------------------
 
-with open('spline_MMS.pkl', 'rb') as file:
+with open('../data/spline_MMS.pkl', 'rb') as file:
     spline = pickle.load(file)
 
 print()

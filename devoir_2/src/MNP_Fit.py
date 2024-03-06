@@ -183,7 +183,7 @@ print(f"Mean Linf Error: {mean_Linf_error}")
 
 # Spline ----------------------------------------------------------------------
 
-with open('spline.pkl', 'wb') as file:
+with open('../data/spline_MNP.pkl', 'wb') as file:
     pickle.dump(spline, file)
 
 print("Spline object has been saved.")
