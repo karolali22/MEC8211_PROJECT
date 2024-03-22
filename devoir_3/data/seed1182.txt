@@ -1,0 +1,33 @@
+seed 1182
+
+NX = 50
+dx = 4e-6
+d_equivalent = 13.329530588118946
+number_of_fibres = 30
+poro_eff = 0.898000000000000
+Re = 0.006285529771218
+k_in_micron2 = 34.707703052824307
+
+NX = 100
+dx = 2e-6
+d_equivalent = 13.329530588118946
+number_of_fibres = 30
+poro_eff = 0.899300000000000
+Re = 0.005880757398886
+k_in_micron2 = 32.012404145262053
+
+NX = 200
+dx = 1e-6
+d_equivalent = 13.329530588118946
+number_of_fibres = 30
+poro_eff = 0.897875000000000
+Re = 0.005415395232987
+k_in_micron2 = 29.943771408283059
+
+NX = 400
+dx = 5e-7
+d_equivalent = 13.329530588118946
+number_of_fibres = 30
+poro_eff = 0.898643750000000
+Re = 0.005427873786121
+k_in_micron2 = 29.761366403127507
