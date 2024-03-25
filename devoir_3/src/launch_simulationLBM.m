@@ -16,11 +16,11 @@
 
 seed=8211;
 deltaP=0.1; % pressure drop in Pa
-NX=200
+NX=100
 %poro=0.9;
 mean_fiber_d=12.5; % in microns
 std_d=2.85; % in microns
-dx=1e-6 % grid size in m
+dx=2e-6 % grid size in m
 filename='fiber_mat.tiff';
 
 % generation of the fiber structure

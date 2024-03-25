@@ -5,6 +5,7 @@ MEC8211 - Homework 3 - Group 4
 """
 
 import pandas as pd
+import statistics
 
 files = ['../data/simulation_results_11.txt',
          '../data/simulation_results_28.txt',
@@ -38,7 +39,9 @@ for file in files:
 mean_std_dev = sum(std_devs) / len(std_devs)
 mean_var = sum(variances) / len(variances)
 mean_mean = sum(means) / len(means)
+median_seeds = statistics.median(means)
 
 print(f"\nMean Standard Deviation across all seeds: {mean_std_dev}")
 print(f"\nMean Variance across all seeds: {mean_var}")
 print(f"\nMean Mean across all seeds: {mean_mean}")
+print(f"\nMedian across all seeds: {median_seeds}")
