@@ -7,8 +7,8 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 base_folder_paths = [
-    '../data/mcs_results/re_5793000/',
-    '../data/mcs_results/re_6154000/'
+    '../data/mcs_results/re_5591000/',
+    '../data/mcs_results/re_6725000/'
 ]
 
 aoa_data = {}
@@ -21,7 +21,7 @@ for base_folder_path in base_folder_paths:
     re_index = path_components.index('mcs_results') + 1
     re_folder = path_components[re_index]
     
-    re_value = re_folder.split('_')[1]
+    re_value = os.path.basename(base_folder_path.strip('/')).split('_')[1]
 
     aoa_folders = glob.glob(f'{base_folder_path}aoa_*')
 
@@ -66,4 +66,4 @@ for aoa, re_values in aoa_data.items():
     plt.savefig(f'{output_fig_folder}Overlay_CDF_AOA_{aoa}.png')
     plt.close()
 
-print("Overlay plots created for each AoA across different REs.")
+print("CDF plots created for each AoA across different REs.")
