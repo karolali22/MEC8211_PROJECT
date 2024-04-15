@@ -42,7 +42,7 @@ for base_folder_path in base_folder_paths:
                         value = float(match.group(1))
                         aoa_data[aoa][re_value].append(value)
 
-output_fig_folder = '../results/CDF/'
+output_fig_folder = '../results/CDF/CD/'
 os.makedirs(output_fig_folder, exist_ok=True)
 
 for aoa, re_values in aoa_data.items():
