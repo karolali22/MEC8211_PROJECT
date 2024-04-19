@@ -1,5 +1,4 @@
 import os
-import numpy as np
 import re
 import matplotlib.pyplot as plt
 
@@ -29,25 +28,17 @@ def calculate_errors(folder_path):
 
     aoa_values = sorted(temp_aoa.keys())
     cl_values = [temp_cl[aoa] for aoa in aoa_values]
-    #cl_theoretical_values = [2 * np.pi * np.sin(np.radians(aoa)) for aoa in aoa_values]
-    cl_theoretical_values = [2 * np.pi * np.radians(aoa) for aoa in aoa_values]
 
-    errors = [abs(cl - cl_th) for cl, cl_th in zip(cl_values, cl_theoretical_values)]
-    l1_norm = np.sum(errors)
-    l2_norm = np.sqrt(np.sum([e**2 for e in errors]))
-    linf_norm = max(errors)
-
-    return aoa_values, cl_values, cl_theoretical_values, l1_norm, l2_norm, linf_norm
+    return aoa_values, cl_values
 
 def plot_all_cl_values(data_dict):
     plt.figure(figsize=(10, 6))
-    markers = ['o', 's', '^']
-    colors = ['blue', 'green', 'red']
+    markers = ['o', 's', '^', 'd']
+    colors = ['blue', 'green', 'red', 'teal']
     
-    for i, (key, (aoa_values, cl_values, cl_theoretical_values)) in enumerate(data_dict.items()):
+    for i, (key, (aoa_values, cl_values)) in enumerate(data_dict.items()):
         plt.scatter(aoa_values, cl_values, color=colors[i], marker=markers[i], label=f'Simulation {key} CL')
 
-    plt.plot(aoa_values, cl_theoretical_values, color='black', linestyle='--', label=f'Theoretical CL')
     plt.title('CL Values Across Different Mesh Resolutions')
     plt.xlabel('Angle of Attack (Degrees)')
     plt.ylabel('CL Value')
@@ -55,11 +46,11 @@ def plot_all_cl_values(data_dict):
     plt.grid(True)
     plt.show()
 
-folder_paths = ['../data/convergence_results/65x65', '../data/convergence_results/129x129', '../data/convergence_results/257x257']
+folder_paths = ['../data/convergence_results/65x65', '../data/convergence_results/129x129', '../data/convergence_results/257x257', '../data/convergence_results/513x513']
 cl_data_dict = {}
 
 for folder in folder_paths:
-    aoa_values, cl_values, cl_theoretical_values, _, _, _ = calculate_errors(folder)
-    cl_data_dict[folder] = (aoa_values, cl_values, cl_theoretical_values)
+    aoa_values, cl_values = calculate_errors(folder)
+    cl_data_dict[folder] = (aoa_values, cl_values)
 
 plot_all_cl_values(cl_data_dict)
