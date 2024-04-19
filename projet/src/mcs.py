@@ -2,13 +2,13 @@ import os
 import shutil
 import numpy as np
 
-NUM_SIMULATIONS = 50
-REYNOLDS_NUMBERS = [5.793e6, 5.970e6, 6.154e6]
+NUM_SIMULATIONS = 60
+REYNOLDS_NUMBERS = [5.591e6, 5.970e6, 6.725e6]
 
 aoa_means = [-4.05, -2.00, 0.05, 1.98, 4.18, 6.20, 8.22, 10.18, 11.08, 12.25, 13.10, 14.28, 15.20, 16.18, 16.9, 17.35, 17.65, 18.65]
 mach_mean = 0.15
-aoa_std = 0.01
-mach_std = 0.0025
+aoa_std = 0.75
+mach_std = 0.015
 
 mach_values = np.random.normal(mach_mean, mach_std, NUM_SIMULATIONS)
 
@@ -57,7 +57,7 @@ for reynolds in REYNOLDS_NUMBERS:
             os.system('~/champs-development/bin/champs__flow -nl 1 -f unsteady_inputs')
 
             original_file = os.path.join(output_folder, 'forces_unsteady.dat')
-            new_file_name = f'forces_unsteady_aoa_{aoa:.2f}_mach_{mach:.4f}.dat'
+            new_file_name = f'forces_unsteady_aoa_{aoa:.4f}_mach_{mach:.4f}.dat'
             new_file = os.path.join(subfolder_path, new_file_name)
 
             shutil.copy(original_file, new_file)
